@@ -2,5 +2,8 @@
 (:require [clojure.test :refer :all]
           [gilded-rose.core :refer [update-quality item]]))
 
-(deftest gilded-rose-test
-  (is (= "fixme" (:name (first (update-quality [(item "foo" 0 0)]))))))
+(deftest common-item-keeps-name-test
+  (is (= "foo" (:name (first (update-quality [(item "foo" 0 0)]))))))
+
+(deftest common-item-decreases-quality-in-one-test
+  (is (= 7 (:quality (first (update-quality [(item "foo" 10 8)]))))))

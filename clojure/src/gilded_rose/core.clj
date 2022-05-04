@@ -22,9 +22,10 @@
       (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
         (merge item {:quality (dec (:quality item))})
       :else item))
-  (map (fn [item]
+    (map (fn [item]
       (if (not= "Sulfuras, Hand of Ragnaros" (:name item))
-        (merge item {:sell-in (dec (:sell-in item))})
+        (merge item {:sell-in (dec (:sell-in item))
+                     :quality (dec (:quality item))})
         item))
   items)))
 
