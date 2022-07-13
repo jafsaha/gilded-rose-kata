@@ -1,5 +1,10 @@
 (ns gilded-rose.core)
 
+(defn change-quality [{:keys [quality] :as item}]
+  (if (= quality 0)
+    item
+    (merge item {:quality (dec quality)})))
+
 (defn update-quality [items]
   (map
     (fn[item] (cond
@@ -21,11 +26,12 @@
             item))
       (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
         (merge item {:quality (dec (:quality item))})
-      :else item))
+      :else (if (not= (:name item) "Sulfuras") 
+              (change-quality item)
+              item)))
     (map (fn [item]
       (if (not= "Sulfuras, Hand of Ragnaros" (:name item))
-        (merge item {:sell-in (dec (:sell-in item))
-                     :quality (dec (:quality item))})
+        (merge item {:sell-in (dec (:sell-in item))})
         item))
   items)))
 
