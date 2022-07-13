@@ -1,25 +1,33 @@
 (ns gilded-rose.core)
 
+
+(defn is-an-item-that-decrement-twice-as-fast [item]
+  (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item))))
+
+(defn is-backstage-passes [item]
+  (= "Backstage passes to a TAFKAL80ETC concert" (:name item)))
+
+
 (defn update-quality [items]
   (map
     (fn[item] (cond
-      (and (< (:sell-in item) 0) (= "Backstage passes to a TAFKAL80ETC concert" (:name item)))
+      (and (< (:sell-in item) 0) (is-backstage-passes item))
         (merge item {:quality 0})
-      (or (= (:name item) "Aged Brie") (= (:name item) "Backstage passes to a TAFKAL80ETC concert"))
-        (if (and (= (:name item) "Backstage passes to a TAFKAL80ETC concert") (>= (:sell-in item) 5) (< (:sell-in item) 10))
+      (or (= (:name item) "Aged Brie") (is-backstage-passes item))
+        (if (and (is-backstage-passes item) (>= (:sell-in item) 5) (< (:sell-in item) 10))
           (merge item {:quality (inc (inc (:quality item)))})
-          (if (and (= (:name item) "Backstage passes to a TAFKAL80ETC concert") (>= (:sell-in item) 0) (< (:sell-in item) 5))
+          (if (and (is-backstage-passes item) (>= (:sell-in item) 0) (< (:sell-in item) 5))
             (merge item {:quality (inc (inc (inc (:quality item))))})
             (if (< (:quality item) 50)
               (merge item {:quality (inc (:quality item))})
               item)))
       (< (:sell-in item) 0)
-        (if (= "Backstage passes to a TAFKAL80ETC concert" (:name item))
+        (if (is-backstage-passes item)
           (merge item {:quality 0})
-          (if (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
+          (if (and (> (:quality item) 1) (is-an-item-that-decrement-twice-as-fast item))
             (merge item {:quality (- (:quality item) 2)})
             item))
-      (or (= "+5 Dexterity Vest" (:name item)) (= "Elixir of the Mongoose" (:name item)))
+      (and (= (:quality item) 1) (is-an-item-that-decrement-twice-as-fast item))
         (merge item {:quality (dec (:quality item))})
       :else item))
   (map (fn [item]
