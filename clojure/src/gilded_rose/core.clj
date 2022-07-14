@@ -1,9 +1,18 @@
 (ns gilded-rose.core)
 
-(defn change-quality [{:keys [quality] :as item}]
-  (if (= quality 0)
-    item
-    (merge item {:quality (dec quality)})))
+(defn change-aged-brie [{:keys [name] :as item}]
+  (if (< (:quality item) 50)
+    (merge item {:quality (inc (:quality item))})
+    item))
+
+(defn change-quality [{:keys [quality name] :as item}]
+  (cond
+    (= name "Aged Brie") (change-aged-brie item)
+    (= name "Backstage passes to a TAFKAL80ETC concert")
+    :else (if (= quality 0)
+            item
+            (merge item {:quality (dec quality)}))
+    ))
 
 (defn update-quality [items]
   (map
@@ -15,9 +24,7 @@
           (merge item {:quality (inc (inc (:quality item)))})
           (if (and (= (:name item) "Backstage passes to a TAFKAL80ETC concert") (>= (:sell-in item) 0) (< (:sell-in item) 5))
             (merge item {:quality (inc (inc (inc (:quality item))))})
-            (if (< (:quality item) 50)
-              (merge item {:quality (inc (:quality item))})
-              item)))
+            (change-quality item)))
       (< (:sell-in item) 0)
         (if (= "Backstage passes to a TAFKAL80ETC concert" (:name item))
           (merge item {:quality 0})

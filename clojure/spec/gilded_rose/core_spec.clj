@@ -28,4 +28,4 @@
 
 (deftest quality-is-never-negative-test
   (is (= 0 (:quality (first (update-quality [(item "foo" 10 0)])))))
-  (is (= 0 (:quality (first (update-quality [(item "foo" 10 0)]))))))
+  (is (= 0 (:quality (first (update-quality [(item "Sulfuras" 10 0)]))))))
